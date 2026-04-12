@@ -9,22 +9,33 @@ app = Flask(__name__)
 db = None
 
 try:
-    db_url = os.environ.get("DATABASE_URL")
+    # Try Railway variables first
+    db_url = os.getenv("DATABASE_URL") or os.getenv("MYSQL_URL")
 
-    if not db_url:
-        raise Exception("DATABASE_URL not found")
+    if db_url:
+        # 🌐 Railway DB
+        url = urlparse(db_url)
 
-    url = urlparse(db_url)
+        db = mysql.connector.connect(
+            host=url.hostname,
+            user=url.username,
+            password=url.password,
+            database=url.path[1:],  # remove '/'
+            port=url.port
+        )
 
-    db = mysql.connector.connect(
-        host=url.hostname,
-        user=url.username,
-        password=url.password,
-        database=url.path[1:],  # remove /
-        port=url.port
-    )
+        print("✅ Connected to Railway MySQL")
 
-    print("✅ Connected to Railway MySQL")
+    else:
+        # 💻 Local fallback (for testing only)
+        db = mysql.connector.connect(
+            host="localhost",
+            user="root",
+            password="AniRahul12@*",   # your local password
+            database="cyber_db"
+        )
+
+        print("✅ Connected to LOCAL MySQL")
 
 except Exception as e:
     print("❌ DB Error:", e)
