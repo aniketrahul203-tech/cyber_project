@@ -1,38 +1,30 @@
 import os
-from flask import Flask, render_template
+from flask import Flask
 import mysql.connector
 from urllib.parse import urlparse
 
 app = Flask(__name__)
 
-# ---------------- DB CONNECTION ----------------
+# ---------------- DATABASE CONNECTION ----------------
 db = None
 
 try:
     db_url = os.environ.get("DATABASE_URL")
 
-    if db_url:
-        # 🌐 Railway (online)
-        url = urlparse(db_url)
+    if not db_url:
+        raise Exception("DATABASE_URL not found")
 
-        db = mysql.connector.connect(
-            host=url.hostname,
-            user=url.username,
-            password=url.password,
-            database=url.path[1:],  # remove /
-            port=url.port
-        )
-        print("✅ Connected to Railway MySQL")
+    url = urlparse(db_url)
 
-    else:
-        # 💻 Local MySQL
-        db = mysql.connector.connect(
-            host="localhost",
-            user="root",
-            password="AniRahul12@*",   # your password
-            database="cyber_db"
-        )
-        print("✅ Connected to LOCAL MySQL")
+    db = mysql.connector.connect(
+        host=url.hostname,
+        user=url.username,
+        password=url.password,
+        database=url.path[1:],  # remove /
+        port=url.port
+    )
+
+    print("✅ Connected to Railway MySQL")
 
 except Exception as e:
     print("❌ DB Error:", e)
@@ -67,14 +59,12 @@ def incidents():
         JOIN Threat t ON i.threat_id = t.threat_id
         JOIN Vulnerability v ON i.vulnerability_id = v.vulnerability_id
         """
-
         cursor.execute(query)
         data = cursor.fetchall()
 
     except Exception as e:
         return f"❌ Error: {e}"
 
-    # HTML output
     html = """
     <h2>Incident List</h2>
     <table border="1" cellpadding="10">
@@ -105,4 +95,4 @@ def incidents():
 
 # ---------------- RUN ----------------
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000)
