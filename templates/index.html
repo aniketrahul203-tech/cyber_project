@@ -1,2 +1,58 @@
-<h1>Cybersecurity Dashboard</h1>
-<a href="/incidents">View Incidents</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Cyber Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <h1>🔐 Cybersecurity Incident Dashboard</h1>
+
+    <h2>Events</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Severity</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Login Failure</td>
+            <td>High</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>File Access</td>
+            <td>Medium</td>
+        </tr>
+    </table>
+
+    <h2>Alerts</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Type</th>
+            <th>Status</th>
+        </tr>
+        <tr>
+            <td>1</td>
+            <td>Brute Force</td>
+            <td>Open</td>
+        </tr>
+        <tr>
+            <td>2</td>
+            <td>Suspicious Access</td>
+            <td>Closed</td>
+        </tr>
+    </table>
+
+    <h2>Add Mitigation Action</h2>
+
+    <form>
+        <input type="text" placeholder="Alert ID">
+        <input type="text" placeholder="Action Taken">
+        <button type="submit">Submit</button>
+    </form>
+
+</body>
+</html>
